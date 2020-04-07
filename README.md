@@ -1,6 +1,6 @@
 # Red Light/Green Light
 
-###by Graham Falk
+by Graham Falk
 
 ***Starting the game:***
   
