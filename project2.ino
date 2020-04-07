@@ -25,24 +25,28 @@ int lightlevel=0;
 
 void setup() {
 Serial.begin(9600);
-//pinmodes
+//Outputs
 pinMode(internalLED,OUTPUT);
 pinMode(redLED,OUTPUT);
 pinMode(greenLED,OUTPUT);
 pinMode(blueLED,OUTPUT);
 
+//Inputs
 pinMode(button, INPUT);
 pinMode(ldr, INPUT);
 
+//Sets initial light level for the start of the game
 lightlevel=analogRead(A1);
+
 }
 
 void loop() {
-  //starts timer
-  unsigned long currentMillis=millis();
   
   //debug
   //debug();
+  
+  //starts timer
+  unsigned long currentMillis=millis();
 
   if(state==stateRedLight)
   {
@@ -50,9 +54,11 @@ void loop() {
     //turns on red light
     analogWrite(redLED,HIGH);
     analogWrite(greenLED,LOW);
-   
+
+    //reads current light level
     int redRead=analogRead(A1);
 
+    //if player ajusts the light level by a degree of 300 then you lose
     if(redRead>lightlevel+300 || redRead<lightlevel-300)
     {
       state=stateLose;
@@ -65,7 +71,9 @@ void loop() {
     analogWrite(greenLED,HIGH);
     analogWrite(redLED,LOW);
 
+    //reads the button
     int greenRead=digitalRead(button);
+    
     if(greenRead==HIGH)   //if button is pushed while light is green then you win
     {
       state=stateWin;
@@ -98,10 +106,11 @@ void loop() {
     int randotime=random(-3,3)*1000; //creates a random number that will add or subtract up to 3 seconds from the time interval
     if((currentMillis-prevMillis)>=(interval+randotime))
     {
-      state=stateGreenLight;
+      state=stateGreenLight; //changes to green light
       prevMillis=millis();
     }
 
+    //boolean variable so that lightlevel is only gotten once
     lightbool=0;
     
   }else if(state==stateGreenLight)
@@ -110,13 +119,13 @@ void loop() {
     int randotime=random(-3,3)*1000; //creates a random number that will add or subtract up to 3 seconds from the time interval
     if((currentMillis-prevMillis)>=(interval+randotime))
     {
-      state=stateRedLight;
+      state=stateRedLight; //changes to red light
       prevMillis=millis();
       if(lightbool==0)
         {
           lightlevel=analogRead(A1);
-          Serial.println(lightlevel);
-          lightbool=1;
+          Serial.println(lightlevel); //gets light level that determines if player moves during red light
+          lightbool=1; //changes lightlevel bool so this is only done once
         }
     }
     
@@ -125,6 +134,8 @@ void loop() {
   
 }
 
+
+//debug to check if my wiring is set up correctly
 void debug() {
   
   //checks if sensor is working
